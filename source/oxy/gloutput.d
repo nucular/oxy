@@ -2,6 +2,7 @@ module oxy.gloutput;
 
 import std.stdio;
 import std.algorithm;
+import std.math;
 import derelict.glfw3.glfw3;
 import derelict.opengl3.gl;
 import derelict.opengl3.types;
@@ -12,6 +13,8 @@ class GLOutput : Output
 {
   GLFWwindow* window;
   double lastTime;
+
+  Sample lastSample;
 
   this()
   {
@@ -28,6 +31,11 @@ class GLOutput : Output
     glfwMakeContextCurrent(window);
     DerelictGL.reload(GLVersion.None, GLVersion.GL41);
     glfwSwapInterval(1);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glLineWidth(2.0);
+    glPointSize(2.0);
 
     this.running = true;
   }
@@ -50,6 +58,7 @@ class GLOutput : Output
     glfwGetFramebufferSize(this.window, &width, &height);
     ratio = width / cast(float)(height);
     glViewport(0, 0, width, height);
+
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -57,9 +66,20 @@ class GLOutput : Output
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glBegin(GL_LINE_STRIP);
+
+    void drawSample(Sample sample)
+    {
+      float sdist = pow(sample[0] - this.lastSample[0], 2) + pow(sample[1] - this.lastSample[1], 2);
+      glColor4f(1.0, 1.0, 1.0, (1.0 - (sdist / 0.004)) * 1.0);
+      glVertex3f(sample[0], sample[1], 0.0);
+      this.lastSample = sample;
+    }
+
+    glVertex3f(this.lastSample[0], this.lastSample[1], 0.0);
     Sample sample;
     while (this.samplebuffer.tryGet(sample))
-      glVertex3f(sample[0], sample[1], 0.0);
+      drawSample(sample);
+
     glEnd();
 
     glfwSwapBuffers(this.window);
