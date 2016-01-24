@@ -11,6 +11,7 @@ import oxy.buffer;
 class GLOutput : Output
 {
   GLFWwindow* window;
+  double lastTime;
 
   this()
   {
@@ -39,6 +40,11 @@ class GLOutput : Output
 
   void render()
   {
+    double time = glfwGetTime();
+    if ((time - this.lastTime) < (1.0 / this.frameRate))
+      return;
+    this.lastTime = time;
+
     float ratio;
     int width, height;
     glfwGetFramebufferSize(this.window, &width, &height);
