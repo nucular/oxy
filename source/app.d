@@ -9,7 +9,7 @@ void main()
   auto input = new JackInput();
   auto output = new GLOutput();
 
-  auto samplebuffer = new SampleBuffer(input.sampleRate / output.frameRate);
+  auto samplebuffer = new SampleBuffer((input.sampleRate / output.frameRate) * 2);
   input.samplebuffer = samplebuffer;
   output.samplebuffer = samplebuffer;
 
