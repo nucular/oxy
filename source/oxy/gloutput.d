@@ -16,7 +16,6 @@ class GLOutput : Output
 
   GLFWwindow* window;
   GLuint[2] textures;
-  GLuint[2] depthbuffers;
   GLuint[2] fbos;
   size_t target = 0;
   size_t prevtarget = 1;
@@ -46,23 +45,18 @@ class GLOutput : Output
     glPointSize(2.0);
 
     glGenTextures(2, this.textures.ptr);
-    glGenRenderbuffers(2, this.depthbuffers.ptr);
     glGenFramebuffers(2, this.fbos.ptr);
 
     for (int i = 0; i < this.textures.length; i++)
     {
       glBindTexture(GL_TEXTURE_2D, this.textures[i]);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.width, this.height,
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height,
         0, GL_RGBA, GL_UNSIGNED_BYTE, null);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glBindTexture(GL_TEXTURE_2D, 0);
-
-      /*glBindRenderbuffer(GL_RENDERBUFFER, this.depthbuffers[i]);
-      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this.width, this.height);
-      glBindRenderbuffer(GL_RENDERBUFFER, 0);*/
 
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.fbos[i]);
       glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, this.textures[i], 0);
@@ -102,16 +96,16 @@ class GLOutput : Output
 
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.fbos[this.target]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    glActiveTexture(GL_TEXTURE0 + 0);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this.textures[this.prevtarget]);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex3f(0.0, 0.0, 0.0);
-    glTexCoord2f(0.0, 1.0); glVertex3f(0.0, 1.0, 0.0);
-    glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0.0);
-    glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0.0, 0.0);
+    glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0, -1.0);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, 1.0, -1.0);
+    glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, -1.0);
+    glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, -1.0);
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
