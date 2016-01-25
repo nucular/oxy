@@ -35,8 +35,8 @@ class OPOCRingBuffer(T)
 
   void clear()
   {
-    atomicStore(this.readi, 0);
-    atomicStore(this.writei, 0);
+    atomicStore(this.readi, cast(size_t)0);
+    atomicStore(this.writei, cast(size_t)0);
   }
 
   bool enqueue(in T item)
