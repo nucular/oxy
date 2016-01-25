@@ -7,5 +7,8 @@ abstract class Input
   SampleBuffer samplebuffer;
   bool running;
 
-  @property uint sampleRate();
+  @property int sampleRate();
+
+  @property int bufferSize();
+  @property void bufferSize(int);
 }

@@ -1,5 +1,6 @@
 module oxy.jackinput;
 
+import core.thread;
 import std.stdio;
 import oxy.input;
 import oxy.buffer;
@@ -12,6 +13,9 @@ class JackInput : Input
   JackClient client;
   JackPort inX;
   JackPort inY;
+
+  /// Max. amount of context-switches to wait for the queue (per sample)
+  uint spins = 10;
 
   this()
   {
@@ -32,8 +36,13 @@ class JackInput : Input
 
       for (jack_nframes_t i = 0; i < nframes; i++)
       {
-        Sample sample = [*(bufferX++), *(bufferY++)];
-        this.samplebuffer.put(sample);
+        Sample sample = [-*(bufferX++), -*(bufferY++)];
+        int t;
+        for (t = 0; t < this.spins; t++)
+        {
+          if (this.samplebuffer.enqueue(sample)) break;
+          Thread.yield();
+        }
       }
 
       return 0;
@@ -48,5 +57,8 @@ class JackInput : Input
     this.client.close();
   }
 
-  @property override uint sampleRate() { return this.client.get_sample_rate(); }
+  @property override int sampleRate() { return this.client.get_sample_rate(); }
+
+  @property override int bufferSize() { return this.client.get_buffer_size(); }
+  @property override void bufferSize(int v) { this.client.set_buffer_size(v); }
 }

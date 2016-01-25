@@ -7,5 +7,7 @@ abstract class Output
   SampleBuffer samplebuffer;
   bool running;
 
-  @property uint frameRate();
+  uint samplesPerFrame;
+
+  @property int frameRate();
 }

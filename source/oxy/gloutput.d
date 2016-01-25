@@ -129,8 +129,10 @@ class GLOutput : Output
 
     glVertex3f(this.lastSample[0], this.lastSample[1], 0.0);
     Sample sample;
-    while (this.samplebuffer.tryGet(sample))
+    for (int i = 0; i < this.samplesPerFrame; i++) {
+      this.samplebuffer.dequeue(sample);
       drawSample(sample);
+    }
     glEnd();
 
 
@@ -148,10 +150,7 @@ class GLOutput : Output
     this.running = glfwWindowShouldClose(this.window) == 0;
   }
 
-  @property override uint frameRate()
-  {
-    return 60;
-  }
+  @property override int frameRate() { return 60; } // TODO
 
 
   static extern(C) nothrow void framebufferSizeCallback(GLFWwindow* window,
