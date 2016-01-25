@@ -3,10 +3,10 @@
 	"description": "XY-Oscilloscope for JACK",
 	"copyright": "Copyright © 2016, nucular",
 	"authors": ["nucular"],
-  "license": "MIT",
+	"license": "MIT",
 	"dependencies": {
-    "jack": "~>1.0.1",
-    "derelict-glfw3": "~>1.1.1",
-    "derelict-gl3": "~>1.0.17"
+		"jack": "~>1.0.1",
+		"derelict-glfw3": "~>1.1.1",
+		"derelict-gl3": "~>1.0.17"
 	}
 }
