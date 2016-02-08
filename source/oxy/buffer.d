@@ -57,7 +57,7 @@ class OPOCRingBuffer(T)
     while (!this.enqueue(item)) { Thread.yield(); }
   }
 
-  bool tryEnqueue(in T item, inout int spins)
+  bool tryEnqueue(in T item, ref int spins)
   {
     while (spins--)
     {
@@ -86,7 +86,7 @@ class OPOCRingBuffer(T)
     while (!this.dequeue(output)) { Thread.yield(); }
   }
 
-  bool tryDequeue(out T output, inout int spins)
+  bool tryDequeue(out T output, ref int spins)
   {
     while (spins--)
     {
