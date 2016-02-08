@@ -57,6 +57,18 @@ class OPOCRingBuffer(T)
     while (!this.enqueue(item)) { Thread.yield(); }
   }
 
+  bool tryEnqueue(in T item, inout int spins)
+  {
+    while (spins--)
+    {
+      if (this.enqueue(item))
+        return true;
+      else
+        Thread.yield();
+    }
+    return false;
+  }
+
   bool dequeue(out T output)
   {
     auto head = atomicLoad(this.readi);
@@ -72,6 +84,18 @@ class OPOCRingBuffer(T)
   void forceDequeue(out T output)
   {
     while (!this.dequeue(output)) { Thread.yield(); }
+  }
+
+  bool tryDequeue(out T output, inout int spins)
+  {
+    while (spins--)
+    {
+      if (this.dequeue(output))
+        return true;
+      else
+        Thread.yield();
+    }
+    return false;
   }
 }
 

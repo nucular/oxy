@@ -101,7 +101,7 @@ class GLOutput : Output
     glLoadIdentity();
 
 
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.fbos[this.target]);
+    /*glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.fbos[this.target]);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
@@ -114,7 +114,7 @@ class GLOutput : Output
     glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1.0, 0.0);
     glEnd();
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);*/
 
 
     glBegin(GL_LINE_STRIP);
@@ -136,16 +136,16 @@ class GLOutput : Output
     glEnd();
 
 
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    /*glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[this.target]);
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
       GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);*/
 
     glfwSwapBuffers(this.window);
     glfwPollEvents();
 
-    swap(target, prevtarget);
+    swap(this.target, this.prevtarget);
 
     this.running = glfwWindowShouldClose(this.window) == 0;
   }

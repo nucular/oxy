@@ -14,9 +14,6 @@ class JackInput : Input
   JackPort inX;
   JackPort inY;
 
-  /// Max. amount of context-switches to wait for the queue (per sample)
-  uint spins = 10;
-
   this()
   {
     this.client = new JackClient();
@@ -35,15 +32,7 @@ class JackInput : Input
       float* bufferY = this.inY.get_audio_buffer(nframes);
 
       for (jack_nframes_t i = 0; i < nframes; i++)
-      {
-        Sample sample = [-*(bufferX++), -*(bufferY++)];
-        int t;
-        for (t = 0; t < this.spins; t++)
-        {
-          if (this.samplebuffer.enqueue(sample)) break;
-          Thread.yield();
-        }
-      }
+        this.samplebuffer.enqueue([*(bufferY++), *(bufferX++)]);
 
       return 0;
     };
